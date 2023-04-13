@@ -23,9 +23,15 @@ def search_by_date(date):
         date_str = date_obj.strftime("%d/%m/%Y")
 
         query = {"timestamp": {"$eq": date_str}}
-        results = search_news(query)
+        news = search_news(query)
 
-        return [(new["title"], new["url"]) for new in results]
+        result = []
+        for new in news:
+            title = new["title"]
+            url = new["url"]
+            result.append((title, url))
+
+        return result
 
     except ValueError:
         raise ValueError("Data inválida")
@@ -35,6 +41,12 @@ def search_by_date(date):
 def search_by_category(category):
     query = {"category": {"$regex": category, "$options": "i"}}
 
-    results = search_news(query)
+    news = search_news(query)
 
-    return [(new["title"], new["url"]) for new in results]
+    result = []
+    for new in news:
+        title = new["title"]
+        url = new["url"]
+        result.append((title, url))
+
+    return result
