@@ -1,5 +1,4 @@
 import time
-import datetime
 import requests
 from parsel import Selector
 
