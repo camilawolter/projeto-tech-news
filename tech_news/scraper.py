@@ -1,4 +1,5 @@
 import time
+import datetime
 import requests
 from parsel import Selector
 
@@ -38,7 +39,46 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_news(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+
+    url = selector.css("head link[rel=canonical]::attr(href)").get()
+
+    title = selector.css(
+        "div.entry-header-inner h1.entry-title::text"
+        ).get().strip()
+
+    timestamp = selector.css(
+        "div.entry-header-inner ul.post-meta li.meta-date::text"
+        ).get()
+
+    writer = selector.css(
+        "div.entry-header-inner ul.post-meta li.meta-author a.url.fn.n::text"
+        ).get()
+
+    reading_time = selector.css(
+        "div.entry-header-inner ul.post-meta li.meta-reading-time::text"
+        ).get().strip()
+    reading_time = int(reading_time.split()[0]) if reading_time else 0
+
+    summary = selector.css(
+        "div.entry-content p"
+        ).xpath("string()").get().strip()
+
+    category = selector.css(
+        "div.entry-header-inner a.category-style span.label::text"
+        ).get()
+
+    news_dict = {
+            'url': url,
+            'title': title,
+            'timestamp': timestamp,
+            'writer': writer,
+            'reading_time': reading_time,
+            'summary': summary,
+            'category': category
+        }
+
+    return news_dict
 
 
 # Requisito 5
